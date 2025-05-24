@@ -2,7 +2,7 @@
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
-model_id="Qwen/Qwen3-0.6B"
+model_id="Qwen/Qwen3-1.7B"
 tokenizer = AutoTokenizer.from_pretrained(model_id, trust_remote_code=True)
 model = AutoModelForCausalLM.from_pretrained(
     model_id,
@@ -16,7 +16,7 @@ print("✅ Qwen3 モデルとトークナイザーをダウンロードしまし
 # LlamaIndex でのインデックス生成と保存処理
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 
-embed_model = HuggingFaceEmbedding(model_name="all-MiniLM-L6-v2")
+embed_model = HuggingFaceEmbedding(model_name="BAAI/bge-m3")
 
 print(embed_model)
 print("✅ エンベッドモデルを生成しました。")
@@ -43,7 +43,7 @@ llm = HuggingFaceLLM(
     model_kwargs={"trust_remote_code": True}
 )
 
-query_engine = index.as_query_engine(llm=llm)
+query_engine = index.as_query_engine(llm=llm, embed_model=embed_model)
 
 print(query_engine)
 print("✅ クエリーエンジンを生成しました。")
@@ -53,4 +53,5 @@ while True:
     if query.lower() in ("exit", "quit"):
         break
     response = query_engine.query(query)
-    print(f"\n回答:\n{response}\n")
+    print('===========回答================')
+    print(f"\n回答:\n{str(response)}\n")
